@@ -1,0 +1,80 @@
+function [all_theta] = oneVsAll(X, y, num_labels, lambda)
+%ONEVSALL trains multiple logistic regression classifiers and returns all
+%the classifiers in a matrix all_theta, where the i-th row of all_theta 
+%corresponds to the classifier for label i
+%   [all_theta] = ONEVSALL(X, y, num_labels, lambda) trains num_labels
+%   logistic regression classifiers and returns each of these classifiers
+%   in a matrix all_theta, where the i-th row of all_theta corresponds 
+%   to the classifier for label i
+
+% Some useful variables
+m = size(X, 1);
+n = size(X, 2);
+
+% You need to return the following variables correctly 
+all_theta = zeros(num_labels, n + 1);
+
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+
+% ====================== YOUR CODE HERE ======================
+% Instructions: You should complete the following code to train num_labels
+%               logistic regression classifiers with regularization
+%               parameter lambda. 
+%
+% Hint: theta(:) will return a column vector.
+%
+% Hint: You can use y == c to obtain a vector of 1's and 0's that tell you
+%       whether the ground truth is true/false for this class.
+%
+% Note: For this assignment, we recommend using fmincg to optimize the cost
+%       function. It is okay to use a for-loop (for c = 1:num_labels) to
+%       loop over the different classes.
+%
+%       fmincg works similarly to fminunc, but is more efficient when we
+%       are dealing with large number of parameters.
+%
+% Example Code for fmincg:
+%
+%     % Set Initial theta
+%     initial_theta = zeros(n + 1, 1);
+%     
+%     % Set options for fminunc
+%     options = optimset('GradObj', 'on', 'MaxIter', 50);
+% 
+%     % Run fmincg to obtain the optimal theta
+%     % This function will return theta and the cost 
+%     [theta] = ...
+%         fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), ...
+%                 initial_theta, options);
+%
+
+initial_theta = zeros(n + 1, 1);
+options = optimset('GradObj', 'on', 'MaxIter', 50);
+
+for c = 1:num_labels
+
+	[theta] = fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), initial_theta, options);
+	all_theta(c,:) = theta';
+
+endfor
+% all_theta is a matrix, where there is a row for each of the trained thetas. In the exercise example, there are 10 rows, of 401 elements each. 
+% You know this because that's how all_theta was initialized in line 15 of the script template.
+% (note that the submit grader's test case doesn't have 401 elements or 10 rows - your function must work for any size data set - so use the "num_labels" variable).
+% Each call to fmincg() returns a theta vector. Be sure you use the lambda value provided in the function header.
+% You then need to copy that vector into a row of all_theta.
+% The oneVsAll.m script template contains several Hints and a code example to guide your work.
+
+% The "y == c" statement creates a vector of 0's and 1's for each value of 'c' as you iterate from 1 to num_labels. Those are the effective 'y' values that are used for training to detect each label.
+% The syntax "(2,:)" means "use all columns of the 2nd row".
+
+
+
+
+
+
+
+% =========================================================================
+
+
+end
